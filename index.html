@@ -81,7 +81,7 @@
   .hint {
     position: absolute;
     left: 50%;
-    top: calc(40% + min(30vmin, 210px)); /* a bit below spinner */
+    top: calc(40% + min(30vmin, 210px));
     transform: translateX(-50%);
     color: var(--text-muted);
     font-size: 12px;
@@ -96,13 +96,13 @@
     position: absolute;
     width: 24px; height: 24px;
     border-radius: 6px;
-    background: transparent;         /* transparent interior */
-    border: 2px solid currentColor;  /* colored border only */
+    background: transparent;
+    border: 2px solid currentColor;
     box-shadow: 0 3px 9px rgba(0,0,0,.12);
     will-change: transform, opacity;
     cursor: grab; touch-action: none;
     transition: opacity .45s ease;
-    color: #000;                     /* overridden per chip */
+    color: #000;
     display: grid; place-items: center;
     overflow: visible;
   }
@@ -146,13 +146,12 @@
     <div class="header-inner">
       <div style="display:flex;align-items:center;">
         <div class="logo-wrap">
-          <!-- Clickable logo: link to home -->
           <a class="logo-link" href="/" aria-label="Go to home">
             <img src="psvaluelogo.png" alt="p’s-value logo">
           </a>
         </div>
         <nav class="nav-links" id="nav">
-          <a href="#dashboards">Dashboards</a>
+          <a href="dashboards.html">Dashboards</a>
           <a href="#apps">Apps</a>
           <a href="#articles">Articles</a>
         </nav>
@@ -172,12 +171,9 @@
     <div class="spinner" id="spinner">
       <img src="Generated_Image_September_12__2025_-_2_13PM-removebg-preview.png" alt="PFP" />
     </div>
-
-    <!-- subtle instruction -->
     <div class="hint">grab &amp; spin</div>
   </div>
 
-  <!-- Footer credit -->
   <footer class="site-footer">
     built by <a href="https://x.com/pdotal" target="_blank" rel="noopener">P.</a>
   </footer>

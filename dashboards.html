@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PFP — Dashboards</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --text-dark:#333; --text-muted:#9a9a9a; --bg:#FBFAFB; --card-bg:#fff; }
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--text-dark);font-family:'Poppins',sans-serif;}
+
+  /* Header */
+  .site-header{position:sticky;top:12px;z-index:1000;}
+  .header-inner{
+    max-width:1200px;margin:0 auto;padding:8px 28px;background:#FBFAFB;border-radius:12px;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .logo-link{display:inline-block;line-height:0;transition:transform .2s ease;}
+  .logo-link:hover{transform:scale(1.08);}
+  .logo-wrap img{height:48px;display:block;user-select:none;}
+  .nav-links{display:flex;gap:48px;margin-left:48px;}
+  .nav-links a{text-decoration:none;color:var(--text-dark);font-weight:600;font-size:16px;display:inline-block;transition:transform .2s ease;}
+  .nav-links a:hover{transform:scale(1.12);}
+  .nav-links a span{display:inline-block;transition:color .18s ease;}
+  .socials{display:flex;gap:14px;}
+  .socials a{display:inline-block;transition:transform 0.2s ease;}
+  .socials a:hover{transform:scale(1.15);}
+  .socials img{height:34px;width:auto;display:block;}
+
+  /* Page spacing (moved up) */
+  .page{max-width:1200px;margin:72px auto 48px;padding:0 28px;} /* was 88px */
+  .title{font-weight:700;font-size:28px;margin:8px 0 18px;}
+
+  /* ====== LOGO CAROUSEL ====== */
+  .carousel-wrap{
+    position:relative;
+    margin:8px 0 24px;
+    padding:14px 0;
+    border-radius:12px;
+    background: linear-gradient(0deg, rgba(0,0,0,0.03), rgba(0,0,0,0.03));
+    overflow:hidden;
+  }
+  .carousel-viewport{ position:relative; overflow:hidden; }
+  .carousel-track{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    will-change: transform;
+    transform: translateX(0);
+  }
+  .logo-item{
+    flex:0 0 auto;
+    display:flex; align-items:center; justify-content:center;
+    height:48px; padding:6px 10px;
+    background:#fff; border-radius:10px;
+    box-shadow:0 4px 14px rgba(0,0,0,.08);
+    border:1px solid rgba(0,0,0,.07);
+    transition: transform .15s ease;
+  }
+  .logo-item:hover{ transform: translateY(-2px); }
+  .logo-item img{
+    max-height:36px; max-width:160px; width:auto; height:auto; display:block; object-fit:contain;
+  }
+
+  /* ====== DASHBOARD GRID ====== */
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(360px,1fr)); gap:18px; }
+  .tile{
+    background:var(--card-bg);
+    border-radius:14px; overflow:hidden;
+    box-shadow:0 8px 24px rgba(0,0,0,.08);
+    display:flex; flex-direction:column;
+    border:3px solid transparent;
+  }
+  .tile-header{
+    padding:12px 14px; font-weight:700; font-size:16px; display:flex; align-items:center; gap:10px;
+    background:linear-gradient(0deg, rgba(0,0,0,0.03), rgba(0,0,0,0.03));
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .dot{width:10px;height:10px;border-radius:50%;}
+  .frame-wrap{position:relative;aspect-ratio:16/10;background:#f4f4f6;}
+  .frame-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff;}
+  .actions{display:flex;gap:10px;align-items:center;justify-content:flex-end;padding:10px 12px;background:linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.02));}
+  .btn{display:inline-block;padding:8px 12px;border-radius:8px;text-decoration:none;color:#222;font-weight:600;background:#fff;border:1px solid rgba(0,0,0,.15);box-shadow:0 2px 8px rgba(0,0,0,.06);}
+  .note{padding:10px 12px;color:#666;font-size:12px;}
+
+  /* Footer */
+  .site-footer{max-width:1200px;margin:24px auto 24px;padding:0 28px;text-align:center;color:var(--text-muted);font-size:12px;}
+  .site-footer a{color:var(--text-dark);text-decoration:none;border-bottom:1px dotted rgba(0,0,0,.25);transition:.15s;}
+  .site-footer a:hover{transform:scale(1.05);color:#000;border-color:rgba(0,0,0,.45);}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div style="display:flex;align-items:center;">
+      <div class="logo-wrap">
+        <a class="logo-link" href="/" aria-label="Go to home"><img src="psvaluelogo.png" alt="p’s-value logo"></a>
+      </div>
+      <nav class="nav-links" id="nav">
+        <a href="dashboards.html">Dashboards</a>
+        <a href="#apps">Apps</a>
+        <a href="#articles">Articles</a>
+      </nav>
+    </div>
+    <div class="socials">
+      <a href="https://x.com/pdotal" target="_blank" rel="noopener"><img src="twitter.png" alt="Twitter (X)"></a>
+      <a href="https://t.me/pdotal" target="_blank" rel="noopener"><img src="telegram.png" alt="Telegram"></a>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+  <div class="title">Dashboards</div>
+
+  <!-- ===== LOGO CAROUSEL ===== -->
+  <section class="carousel-wrap">
+    <div class="carousel-viewport" id="logoCarousel" aria-label="Projects carousel (auto-scroll; hover to pause)">
+      <div class="carousel-track" id="logoTrack"></div>
+    </div>
+  </section>
+
+  <!-- ===== DASHBOARD GRID ===== -->
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer class="site-footer">built by <a href="https://x.com/pdotal" target="_blank" rel="noopener">P.</a></footer>
+
+<script>
+/* Shared palette + nav hover */
+const PALETTE=["#f44336","#e91e63","#9c27b0","#673ab7","#3f51b5","#2196f3","#03a9f4","#00bcd4","#009688","#4caf50","#8bc34a","#cddc39","#ffeb3b","#ffc107","#ff9800","#ff5722"];
+const nav=document.getElementById('nav');
+for(const a of nav.querySelectorAll('a')){
+  const t=a.textContent; a.textContent='';
+  [...t].forEach(ch=>{ const s=document.createElement('span'); s.textContent=ch; a.appendChild(s); });
+  a.addEventListener('mouseenter',()=>a.querySelectorAll('span').forEach(s=>{
+    if(!s.textContent.trim()) return; s.style.color=PALETTE[(Math.random()*PALETTE.length)|0];
+  }));
+  a.addEventListener('mouseleave',()=>a.querySelectorAll('span').forEach(s=>s.style.color=''));
+}
+
+/* ============== LOGO CAROUSEL (auto-run; pause on hover) ============== */
+const CAROUSEL_PUB_ID="2PACX-1vQKtYL4ea-3pNh3EcA1rxQ_Ug283dQ1e82P8sVUpONMDFh80qtiTdyECfaffhFoogfgJcR1EUEeKXjm";
+const CAROUSEL_GID="1686523477";
+const CAROUSEL_CSV = `https://docs.google.com/spreadsheets/d/e/${CAROUSEL_PUB_ID}/pub?gid=${CAROUSEL_GID}&single=true&output=csv`;
+const CAROUSEL_GVIZ= `https://docs.google.com/spreadsheets/d/e/${CAROUSEL_PUB_ID}/gviz/tq?tqx=out:json&gid=${CAROUSEL_GID}`;
+const CAROUSEL_HTML= `https://docs.google.com/spreadsheets/d/e/${CAROUSEL_PUB_ID}/pubhtml?gid=${CAROUSEL_GID}&single=true`;
+
+const logoTrack = document.getElementById('logoTrack');
+const logoViewport = document.getElementById('logoCarousel');
+
+function csvParse(text){
+  const rows=[]; let row=[], val="", q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i], n=text[i+1];
+    if(q){ if(c==='"'&&n==='"'){ val+='"'; i++; } else if(c==='"'){ q=false; } else val+=c; }
+    else { if(c==='"'){ q=true; } else if(c===','){ row.push(val); val=""; }
+      else if(c==='\n'){ row.push(val); rows.push(row); row=[]; val=""; }
+      else if(c==='\r'){ } else val+=c; }
+  }
+  if(val.length||row.length){ row.push(val); rows.push(row); }
+  return rows;
+}
+
+async function loadCarouselRows(){
+  const cb = Date.now();
+  try{
+    const r=await fetch(CAROUSEL_CSV+`&cb=${cb}`, {cache:'reload'});
+    if(!r.ok) throw 0;
+    const txt=await r.text();
+    const rows=csvParse(txt);
+    const headers=rows[0].map(h=>h.trim().toLowerCase());
+    const iP=headers.indexOf('project'), iL=headers.indexOf('logo');
+    if(iP===-1||iL===-1) throw 0;
+    return rows.slice(1).map(r=>({project:(r[iP]||'').trim(), logo:(r[iL]||'').trim()})).filter(x=>x.project && x.logo);
+  }catch{}
+  try{
+    const r=await fetch(CAROUSEL_GVIZ+`&cb=${cb}`, {cache:'reload'});
+    if(!r.ok) throw 0;
+    const t=await r.text();
+    const json=t.replace(/^[\s\S]*setResponse\((\{[\s\S]*\})\);?[\s\S]*$/,'$1');
+    const data=JSON.parse(json);
+    const cols=data.table.cols.map(c=>(c.label||'').toLowerCase());
+    const iP=cols.indexOf('project'), iL=cols.indexOf('logo');
+    if(iP===-1||iL===-1) throw 0;
+    return data.table.rows.map(r=>{
+      const get=i=>r.c[i]? (r.c[i].v||'').toString() : '';
+      return {project:get(iP).trim(), logo:get(iL).trim()};
+    }).filter(x=>x.project && x.logo);
+  }catch{}
+  try{
+    const r=await fetch(CAROUSEL_HTML+`&cb=${cb}`, {cache:'reload'});
+    if(!r.ok) throw 0;
+    const html=await r.text();
+    const doc=new DOMParser().parseFromString(html,'text/html');
+    let table=null;
+    for(const t of doc.querySelectorAll('table')){
+      const hs=[...t.querySelectorAll('th')].map(th=>th.textContent.trim().toLowerCase());
+      if(hs.includes('project') && hs.includes('logo')) { table=t; break; }
+    }
+    if(!table) throw 0;
+    const hs=[...table.querySelectorAll('th')].map(h=>h.textContent.trim().toLowerCase());
+    const iP=hs.indexOf('project'), iL=hs.indexOf('logo');
+    const out=[];
+    for(const tr of table.querySelectorAll('tbody tr')){
+      const tds=tr.querySelectorAll('td'); if(tds.length<Math.max(iP,iL)+1) continue;
+      const project=(tds[iP]?.textContent||'').trim();
+      let logo=(tds[iL]?.textContent||'').trim();
+      const a=tds[iL]?.querySelector('a'); if(a&&a.href) logo=a.href;
+      if(project && logo) out.push({project, logo});
+    }
+    return out;
+  }catch{}
+  return [];
+}
+
+function buildLogoItem({project, logo}){
+  const item=document.createElement('div');
+  item.className='logo-item';
+  const img=document.createElement('img');
+  img.alt=project;
+  img.loading='lazy';
+  img.decoding='async';
+  img.src=logo;
+  item.appendChild(img);
+  return item;
+}
+
+/* auto-scroll by default; pause on hover */
+function initCarousel(items){
+  if(!items.length) return;
+  items.forEach(d=> logoTrack.appendChild(buildLogoItem(d)));
+
+  const ensureFill = () => {
+    const vpW = logoViewport.clientWidth;
+    while(logoTrack.scrollWidth < vpW*2){
+      items.forEach(d=> logoTrack.appendChild(buildLogoItem(d)));
+    }
+  };
+  ensureFill();
+
+  let running=true, x=0, speed=60; // px/sec
+  let last=performance.now();
+
+  logoViewport.addEventListener('mouseenter', ()=>{ running=false; });
+  logoViewport.addEventListener('mouseleave', ()=>{ running=true; });
+
+  function step(now){
+    const dt=(now-last)/1000; last=now;
+    if(running){
+      x -= speed*dt;
+      let first = logoTrack.firstElementChild;
+      while(first && -x >= first.offsetWidth + 18){
+        x += first.offsetWidth + 18;
+        logoTrack.appendChild(first);
+        first = logoTrack.firstElementChild;
+      }
+      logoTrack.style.transform = `translateX(${x}px)`;
+    }
+    requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+
+  const imgs=logoTrack.querySelectorAll('img');
+  let pending=imgs.length;
+  imgs.forEach(img=>{
+    if(img.complete){ if(--pending===0) ensureFill(); }
+    else img.addEventListener('load', ()=>{ if(--pending===0) ensureFill(); }, {once:true});
+  });
+}
+
+(async()=>{
+  const rows = await loadCarouselRows();
+  if(rows.length) initCarousel(rows);
+})();
+</script>
+
+<script>
+/* ============== DASHBOARD GRID (name, iframe, url) ============== */
+const GRID_PUB_ID="2PACX-1vQKtYL4ea-3pNh3EcA1rxQ_Ug283dQ1e82P8sVUpONMDFh80qtiTdyECfaffhFoogfgJcR1EUEeKXjm";
+const GRID_GID="0";
+const GRID_CSV = `https://docs.google.com/spreadsheets/d/e/${GRID_PUB_ID}/pub?gid=${GRID_GID}&single=true&output=csv`;
+const GRID_GVIZ= `https://docs.google.com/spreadsheets/d/e/${GRID_PUB_ID}/gviz/tq?tqx=out:json&gid=${GRID_GID}`;
+const GRID_HTML= `https://docs.google.com/spreadsheets/d/e/${GRID_PUB_ID}/pubhtml?gid=${GRID_GID}&single=true`;
+
+const grid = document.getElementById('grid');
+
+function csvParse(text){
+  const rows=[]; let row=[], val="", q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i], n=text[i+1];
+    if(q){ if(c==='"'&&n==='"'){ val+='"'; i++; } else if(c==='"'){ q=false; } else val+=c; }
+    else { if(c==='"'){ q=true; } else if(c===','){ row.push(val); val=""; }
+      else if(c==='\n'){ row.push(val); rows.push(row); row=[]; val=""; }
+      else if(c==='\r'){ } else val+=c; }
+  }
+  if(val.length||row.length){ row.push(val); rows.push(row); }
+  return rows;
+}
+function extractEmbedSrc(str){
+  if(!str) return null;
+  try{
+    const u=new URL(str.trim());
+    if(u.host.includes('dune.com') && u.pathname.includes('/embeds/')) return u.toString();
+  }catch{}
+  const m=String(str).match(/src\s*=\s*"(.*?)"/i) || String(str).match(/src\s*=\s*'(.*?)'/i);
+  if(m && m[1]) return m[1];
+  const e=String(str).match(/src=&quot;(.*?)&quot;/i);
+  if(e && e[1]) return e[1];
+  return null;
+}
+function addTile(name, iframeCell, url, idx){
+  const color=PALETTE[idx%PALETTE.length];
+  const tile=document.createElement('div'); tile.className='tile'; tile.style.borderColor=color;
+
+  const head=document.createElement('div'); head.className='tile-header';
+  const dot=document.createElement('div'); dot.className='dot'; dot.style.background=color;
+  const title=document.createElement('div'); title.textContent=name||'Untitled';
+  head.append(dot,title); tile.append(head);
+
+  const embedSrc = extractEmbedSrc(iframeCell);
+  if (embedSrc){
+    const wrap=document.createElement('div'); wrap.className='frame-wrap';
+    const iframe=document.createElement('iframe');
+    iframe.src=embedSrc; iframe.title=name||'Dune embed'; iframe.loading='lazy'; iframe.referrerPolicy='no-referrer-when-downgrade';
+    wrap.append(iframe); tile.append(wrap);
+  } else {
+    const note=document.createElement('div'); note.className='note';
+    note.textContent='No valid embed found in the “iframe” column.';
+    tile.append(note);
+  }
+
+  const actions=document.createElement('div'); actions.className='actions';
+  if(url){
+    const btn=document.createElement('a');
+    btn.className='btn'; btn.href=url; btn.target='_blank'; btn.rel='noopener'; btn.textContent='Open on Dune ↗';
+    actions.append(btn);
+  }
+  tile.append(actions);
+
+  grid.append(tile);
+}
+
+async function loadGridRows(){
+  const cb=Date.now();
+  try{
+    const r=await fetch(GRID_CSV+`&cb=${cb}`, {cache:'reload'});
+    if(!r.ok) throw 0;
+    const txt=await r.text();
+    const rows=csvParse(txt);
+    const headers=rows[0].map(h=>h.trim().toLowerCase());
+    const iN=headers.indexOf('name'), iI=headers.indexOf('iframe'), iU=headers.indexOf('url');
+    if(iN===-1||iI===-1||iU===-1) throw 0;
+    return rows.slice(1).map(r=>({name:(r[iN]||'').trim(), iframe:(r[iI]||'').trim(), url:(r[iU]||'').trim()})).filter(x=>x.name && (x.iframe||x.url));
+  }catch{}
+  try{
+    const r=await fetch(GRID_GVIZ+`&cb=${cb}`, {cache:'reload'});
+    if(!r.ok) throw 0;
+    const t=await r.text();
+    const json=t.replace(/^[\s\S]*setResponse\((\{[\s\S]*\})\);?[\s\S]*$/,'$1');
+    const data=JSON.parse(json);
+    const cols=data.table.cols.map(c=>(c.label||'').toLowerCase());
+    const iN=cols.indexOf('name'), iI=cols.indexOf('iframe'), iU=cols.indexOf('url');
+    if(iN===-1||iI===-1||iU===-1) throw 0;
+    const out=data.table.rows.map(r=>{
+      const get=i=>r.c[i]? (r.c[i].v||'').toString() : '';
+      return {name:get(iN).trim(), iframe:get(iI).trim(), url:get(iU).trim()};
+    }).filter(x=>x.name && (x.iframe||x.url));
+    return out;
+  }catch{}
+  try{
+    const r=await fetch(GRID_HTML+`&cb=${cb}`, {cache:'reload'});
+    if(!r.ok) throw 0;
+    const html=await r.text();
+    const doc=new DOMParser().parseFromString(html,'text/html');
+    let table=null;
+    for(const t of doc.querySelectorAll('table')){
+      const hs=[...t.querySelectorAll('th')].map(th=>th.textContent.trim().toLowerCase());
+      if(hs.includes('name') && hs.includes('iframe') && hs.includes('url')) { table=t; break; }
+    }
+    if(!table) throw 0;
+    const hs=[...table.querySelectorAll('th')].map(h=>h.textContent.trim().toLowerCase());
+    const iN=hs.indexOf('name'), iI=hs.indexOf('iframe'), iU=hs.indexOf('url');
+    const out=[];
+    for(const tr of table.querySelectorAll('tbody tr')){
+      const tds=tr.querySelectorAll('td'); if(tds.length<Math.max(iN,iI,iU)+1) continue;
+      const name=(tds[iN]?.textContent||'').trim();
+
+      let iframeCell='';
+      const ifr=tds[iI]?.querySelector('iframe');
+      if(ifr && ifr.src) iframeCell=ifr.outerHTML;
+      else iframeCell=(tds[iI]?.innerHTML||'').trim();
+
+      let url=(tds[iU]?.textContent||'').trim();
+      const a=tds[iU]?.querySelector('a'); if(a&&a.href) url=a.href;
+
+      if(name && (iframeCell||url)) out.push({name, iframe:iframeCell, url});
+    }
+    return out;
+  }catch{}
+  return [];
+}
+
+(async()=>{
+  const rows = await loadGridRows();
+  if(!rows.length){
+    const warn=document.createElement('div');
+    warn.className='tile'; warn.style.borderColor='#f44336';
+    warn.innerHTML='<div class="tile-header"><div class="dot" style="background:#f44336"></div><div>Could not load dashboards</div></div><div class="note">Make sure the sheet has columns: <b>name</b>, <b>iframe</b>, <b>url</b> and is published.</div>';
+    grid.append(warn);
+    return;
+  }
+  rows.forEach((r,i)=> addTile(r.name, r.iframe, r.url, i));
+})();
+</script>
+</body>
+</html>
