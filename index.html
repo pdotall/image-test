@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PFP — Bordered Blocks w/ Inner Image (6s)</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --gold-strong: rgba(255,215,0,.85);
+    --gold-soft:   rgba(255,215,0,.35);
+    --text-dark:   #333;
+    --text-muted:  #9a9a9a;
+    --bg-light:    #F8F8F8;
+  }
+
+  html,body {
+    height: 100%;
+    margin: 0;
+    background: var(--bg-light);
+    color: var(--text-dark);
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+  }
+
+  /* ===== HEADER ===== */
+  .site-header {
+    position: fixed;
+    top: 12px; left: 0; right: 0; z-index: 1000;
+  }
+  .header-inner {
+    max-width: 1200px; margin: 0 auto; padding: 8px 28px;
+    background: #FBFAFB; border-radius: 12px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  /* clickable logo with bump */
+  .logo-link {
+    display: inline-block;
+    line-height: 0;
+    transition: transform .2s ease;
+    cursor: pointer;
+  }
+  .logo-link:hover { transform: scale(1.08); }
+  .logo-wrap img { height: 48px; display: block; user-select: none; }
+
+  /* nav links (per-letter rainbow on hover) */
+  .nav-links { display: flex; gap: 48px; margin-left: 48px; }
+  .nav-links a {
+    text-decoration: none; color: var(--text-dark);
+    font-weight: 600; font-size: 16px; display: inline-block;
+    transition: transform .2s ease;
+  }
+  .nav-links a:hover { transform: scale(1.12); }
+  .nav-links a span { display: inline-block; transition: color .18s ease; }
+
+  /* socials */
+  .socials { display: flex; gap: 14px; }
+  .socials a { display: inline-block; transition: transform 0.2s ease; }
+  .socials a:hover { transform: scale(1.15); }
+  .socials img { height: 34px; width: auto; display: block; user-select: none; }
+
+  /* ===== WORLD ===== */
+  .world { position: fixed; inset: 0; background: #FBFAFB; touch-action: none; }
+
+  .spinner {
+    position: absolute; left: 50%; top: 40%;
+    width: min(60vmin, 420px); aspect-ratio: 1/1;
+    transform: translate(-50%, -50%) rotate(0deg);
+    cursor: grab; user-select: none;
+  }
+  .spinner.dragging { cursor: grabbing; }
+  .spinner img {
+    width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; pointer-events: none;
+    filter: drop-shadow(0 0 40px var(--gold-strong)) drop-shadow(0 0 80px var(--gold-soft));
+  }
+
+  /* small grey hint under the skull */
+  .hint {
+    position: absolute;
+    left: 50%;
+    top: calc(40% + min(30vmin, 210px)); /* a bit below spinner */
+    transform: translateX(-50%);
+    color: var(--text-muted);
+    font-size: 12px;
+    letter-spacing: .4px;
+    user-select: none;
+    pointer-events: none;
+    opacity: .9;
+  }
+
+  /* ===== BORDER-ONLY CHIPS WITH INNER IMAGE ===== */
+  .chip{
+    position: absolute;
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    background: transparent;         /* transparent interior */
+    border: 2px solid currentColor;  /* colored border only */
+    box-shadow: 0 3px 9px rgba(0,0,0,.12);
+    will-change: transform, opacity;
+    cursor: grab; touch-action: none;
+    transition: opacity .45s ease;
+    color: #000;                     /* overridden per chip */
+    display: grid; place-items: center;
+    overflow: visible;
+  }
+  .chip.fading { opacity: 0; }
+  .chip.dragging { cursor: grabbing; }
+  .chip img {
+    width: 72%; height: 72%;
+    object-fit: contain; pointer-events: none;
+    filter:
+      drop-shadow(0 0 6px rgba(255,215,0,.45))
+      drop-shadow(0 0 12px rgba(255,215,0,.2));
+  }
+
+  /* ===== FOOTER ===== */
+  .site-footer {
+    position: fixed;
+    left: 0; right: 0; bottom: 14px;
+    text-align: center;
+    z-index: 1000;
+    color: var(--text-muted);
+    font-size: 12px;
+    user-select: none;
+  }
+  .site-footer a {
+    color: var(--text-dark);
+    text-decoration: none;
+    border-bottom: 1px dotted rgba(0,0,0,.25);
+    transition: transform .15s ease, color .15s ease, border-color .15s ease;
+    display: inline-block;
+  }
+  .site-footer a:hover {
+    transform: scale(1.05);
+    color: #000;
+    border-color: rgba(0,0,0,.45);
+  }
+</style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div style="display:flex;align-items:center;">
+        <div class="logo-wrap">
+          <!-- Clickable logo: link to home -->
+          <a class="logo-link" href="/" aria-label="Go to home">
+            <img src="psvaluelogo.png" alt="p’s-value logo">
+          </a>
+        </div>
+        <nav class="nav-links" id="nav">
+          <a href="#dashboards">Dashboards</a>
+          <a href="#apps">Apps</a>
+          <a href="#articles">Articles</a>
+        </nav>
+      </div>
+      <div class="socials">
+        <a href="https://x.com/pdotal" target="_blank" rel="noopener">
+          <img src="twitter.png" alt="Twitter (X)">
+        </a>
+        <a href="https://t.me/pdotal" target="_blank" rel="noopener">
+          <img src="telegram.png" alt="Telegram">
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="world" id="world">
+    <div class="spinner" id="spinner">
+      <img src="Generated_Image_September_12__2025_-_2_13PM-removebg-preview.png" alt="PFP" />
+    </div>
+
+    <!-- subtle instruction -->
+    <div class="hint">grab &amp; spin</div>
+  </div>
+
+  <!-- Footer credit -->
+  <footer class="site-footer">
+    built by <a href="https://x.com/pdotal" target="_blank" rel="noopener">P.</a>
+  </footer>
+
+<script>
+/* === Multicolor per-letter nav hover === */
+const PALETTE = [
+  "#f44336","#e91e63","#9c27b0","#673ab7","#3f51b5","#2196f3","#03a9f4",
+  "#00bcd4","#009688","#4caf50","#8bc34a","#cddc39","#ffeb3b","#ffc107",
+  "#ff9800","#ff5722"
+];
+const nav = document.getElementById('nav');
+for (const a of nav.querySelectorAll('a')) {
+  const chars = a.textContent.split('');
+  a.textContent = '';
+  chars.forEach(ch => {
+    const s = document.createElement('span');
+    s.textContent = ch;
+    a.appendChild(s);
+  });
+  a.addEventListener('mouseenter', () => {
+    a.querySelectorAll('span').forEach(s => {
+      if (!s.textContent.trim()) { s.style.color = 'inherit'; return; }
+      s.style.color = PALETTE[(Math.random() * PALETTE.length) | 0];
+    });
+  });
+  a.addEventListener('mouseleave', () => {
+    a.querySelectorAll('span').forEach(s => s.style.color = 'var(--text-dark)');
+  });
+}
+
+/* === Spinner + chip physics === */
+const world   = document.getElementById('world');
+const spinner = document.getElementById('spinner');
+const pngSrc  = "Generated_Image_September_12__2025_-_2_13PM-removebg-preview.png";
+
+let rotation = 0, angularVelocity = 0;
+let draggingSpin = false, lastAngleRad = 0, lastTs = 0;
+
+const FRICTION = 0.985, MIN_VEL = 2;
+const G = 1800, AIR = 0.01;
+const CHIP_SIZE = 24, MAX_CHIPS = 400, SPAWN_BASE = 0.0011, LIFE_SPAN = 6000; /* 6 seconds */
+
+const chips = [], settled = [];
+let spawnAccumulator = 0;
+
+const worldRect = () => world.getBoundingClientRect();
+const angleFromEvent = e => {
+  const r = spinner.getBoundingClientRect();
+  return Math.atan2(e.clientY - (r.top + r.height/2), e.clientX - (r.left + r.width/2));
+};
+const normDelta = a => (a > Math.PI ? a - 2*Math.PI : a < -Math.PI ? a + 2*Math.PI : a);
+const setRotation = deg => spinner.style.transform = `translate(-50%, -50%) rotate(${deg}deg)`;
+
+spinner.addEventListener('pointerdown', e => {
+  spinner.setPointerCapture?.(e.pointerId);
+  draggingSpin = true; spinner.classList.add('dragging');
+  angularVelocity = 0; lastAngleRad = angleFromEvent(e); lastTs = performance.now();
+});
+spinner.addEventListener('pointermove', e => {
+  if (!draggingSpin) return;
+  const now = performance.now(); const dt = (now - lastTs)/1000; lastTs = now;
+  const a = angleFromEvent(e); const dRad = normDelta(a - lastAngleRad); lastAngleRad = a;
+  const dDeg = dRad * 180/Math.PI; rotation += dDeg; setRotation(rotation);
+  if (dt > 0) angularVelocity = dDeg / dt;
+});
+const endSpin = e => {
+  if (!draggingSpin) return; draggingSpin = false; spinner.classList.remove('dragging');
+  spinner.releasePointerCapture?.(e.pointerId);
+};
+spinner.addEventListener('pointerup', endSpin);
+spinner.addEventListener('pointercancel', endSpin);
+spinner.addEventListener('lostpointercapture', endSpin);
+
+function createChip(x,y,vx,vy,color){
+  if (chips.length >= MAX_CHIPS){
+    let idx = chips.findIndex(c=>!c.dragging); if (idx<0) idx=0;
+    const rm = chips.splice(idx,1)[0]; if (rm) removeChip(rm);
+  }
+  const el = document.createElement('div');
+  el.className = 'chip';
+  el.style.transform = `translate(${x}px, ${y}px)`;
+  el.style.color = color;           // border color via currentColor
+  el.style.borderColor = color;
+
+  // inner image centered inside the transparent square
+  const img = document.createElement('img');
+  img.src = pngSrc;
+  el.appendChild(img);
+
+  world.appendChild(el);
+
+  const chip = { el, x, y, vx, vy, g: 1800, settled: false, dragging: false,
+                 lifeTimer: setTimeout(() => fadeOutChip(chip), LIFE_SPAN) };
+
+  el.addEventListener('pointerdown', e => startChipDrag(chip, e));
+  chips.push(chip); return chip;
+}
+
+function fadeOutChip(chip){
+  chip.el.classList.add('fading');
+  setTimeout(() => removeChip(chip), 450);
+}
+function removeChip(chip){
+  clearTimeout(chip.lifeTimer);
+  chip.el.remove();
+  const i = chips.indexOf(chip); if (i >= 0) chips.splice(i,1);
+  const j = settled.indexOf(chip); if (j >= 0) settled.splice(j,1);
+}
+
+function startChipDrag(chip, e){
+  e.stopPropagation();
+  clearTimeout(chip.lifeTimer);
+  chip.dragging = true;
+  chip.el.classList.add('dragging');
+
+  const r = worldRect();
+  const px = e.clientX - r.left;
+  const py = e.clientY - r.top;
+  chip.dragOffX = px - chip.x;
+  chip.dragOffY = py - chip.y;
+  chip.lastDragX = px;
+  chip.lastDragY = py;
+  chip.lastDragTs = performance.now();
+
+  chip.el.setPointerCapture?.(e.pointerId);
+
+  function onMove(ev){
+    const R = worldRect();
+    const x = ev.clientX - R.left;
+    const y = ev.clientY - R.top;
+    chip.x = Math.max(0, Math.min(x - chip.dragOffX, R.width  - CHIP_SIZE));
+    chip.y = Math.max(0, Math.min(y - chip.dragOffY, R.height - CHIP_SIZE));
+    const now = performance.now();
+    const dt = Math.max(0.001, (now - chip.lastDragTs)/1000);
+    chip.vx = (x - chip.lastDragX)/dt;
+    chip.vy = (y - chip.lastDragY)/dt;
+    chip.lastDragX = x; chip.lastDragY = y; chip.lastDragTs = now;
+    chip.el.style.transform = `translate(${chip.x}px, ${chip.y}px)`;
+  }
+  function onUp(ev){
+    chip.dragging = false;
+    chip.el.classList.remove('dragging');
+    chip.el.releasePointerCapture?.(ev.pointerId);
+    chip.lifeTimer = setTimeout(() => fadeOutChip(chip), LIFE_SPAN);
+    window.removeEventListener('pointermove', onMove);
+    window.removeEventListener('pointerup', onUp);
+    window.removeEventListener('pointercancel', onUp);
+  }
+  window.addEventListener('pointermove', onMove);
+  window.addEventListener('pointerup', onUp);
+  window.addEventListener('pointercancel', onUp);
+}
+
+function spawnRandomChip(){
+  const rW = worldRect();
+  const rS = spinner.getBoundingClientRect();
+  const cx = rS.left + rS.width/2 - rW.left;
+  const cy = rS.top + rS.height/2 - rW.top;
+  const radius = Math.min(rS.width, rS.height)/2 - 6;
+  const theta = Math.random() * Math.PI * 2;
+  const px = cx + Math.cos(theta)*radius - CHIP_SIZE/2;
+  const py = cy + Math.sin(theta)*radius - CHIP_SIZE/2;
+  const tdx = -Math.sin(theta), tdy = Math.cos(theta);
+  const speed = Math.min(800, Math.max(120, Math.abs(angularVelocity) * 4));
+  const dir = (angularVelocity >= 0) ? 1 : -1;
+  createChip(
+    px, py,
+    dir * tdx * speed + (Math.random()*40 - 20),
+    dir * tdy * speed + (Math.random()*40 - 20),
+    PALETTE[(Math.random()*PALETTE.length)|0]
+  );
+}
+
+function collideAndSettle(chip, nx, ny, floorY){
+  if (ny >= floorY) {
+    chip.y = floorY; chip.vx *= 0.6; chip.vy = 0; chip.settled = true;
+    if (!settled.includes(chip)) settled.push(chip);
+    return true;
+  }
+  for (let i = settled.length - 1; i >= 0; i--) {
+    const s = settled[i];
+    const overlapX = !(nx + CHIP_SIZE < s.x || nx > s.x + CHIP_SIZE);
+    const falling  = chip.vy > 0;
+    const willY    = (ny + CHIP_SIZE >= s.y) && (chip.y + CHIP_SIZE <= s.y + 6);
+    if (falling && overlapX && willY) {
+      chip.y = s.y - CHIP_SIZE; chip.vx *= 0.6; chip.vy = 0; chip.settled = true;
+      if (!settled.includes(chip)) settled.push(chip);
+      return true;
+    }
+  }
+  return false;
+}
+
+let lastFrame = performance.now();
+function tick(now){
+  const dt = (now - lastFrame)/1000; lastFrame = now;
+
+  if (!draggingSpin) {
+    if (Math.abs(angularVelocity) > MIN_VEL) {
+      rotation += angularVelocity * dt;
+      setRotation(rotation);
+      angularVelocity *= Math.pow(FRICTION, 60 * dt);
+    } else angularVelocity = 0;
+  }
+
+  const absW = Math.abs(angularVelocity);
+  spawnAccumulator += absW * SPAWN_BASE * dt * 60;
+  while (spawnAccumulator >= 1) { spawnAccumulator -= 1; spawnRandomChip(); }
+
+  const r = worldRect();
+  const floorY = r.height - CHIP_SIZE;
+
+  for (const c of chips) {
+    if (c.dragging) continue;
+    c.vx *= (1 - AIR * dt);
+    c.vy += G * dt;
+    let nx = c.x + c.vx * dt;
+    let ny = c.y + c.vy * dt;
+
+    if (nx <= 0) { nx = 0; c.vx *= -0.4; }
+    if (nx + CHIP_SIZE >= r.width) { nx = r.width - CHIP_SIZE; c.vx *= -0.4; }
+
+    if (collideAndSettle(c, nx, ny, floorY)) {
+      c.el.style.transform = `translate(${c.x}px, ${c.y}px)`; continue;
+    }
+
+    c.x = nx; c.y = ny;
+    c.el.style.transform = `translate(${c.x}px, ${c.y}px)`;
+  }
+
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>
